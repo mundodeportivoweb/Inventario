@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Almacén de Calzado — Inventario</title>
+<title>Santy Sport — Control de Inventario</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -24,11 +24,9 @@ const LOW_STOCK = 5;
 const CATEGORIAS = ["Deportivo", "Casual", "Formal", "Bota", "Sandalia", "Infantil"];
 
 const seedProducts = () => ([
-  { id: "p1", nombre: "Runner Air", marca: "Nordik", categoria: "Deportivo", talla: 42, color: "Negro", stock: 14, precio: 65.0, vendidos: 23, imagen: "" },
-  { id: "p2", nombre: "Classic Oxford", marca: "Belmont", categoria: "Formal", talla: 41, color: "Café", stock: 4, precio: 89.0, vendidos: 9, imagen: "" },
+  { id: "p1", nombre: "Runner Air", marca: "Nordik", categoria: "Deportivo", talla: 42, color: "Negro", stock: 14, precio: 65.0, vendidos: 23, imagen: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop" },
+  { id: "p2", nombre: "Classic Oxford", marca: "Belmont", categoria: "Formal", talla: 41, color: "Café", stock: 4, precio: 89.0, vendidos: 9, imagen: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&auto=format&fit=crop" },
   { id: "p3", nombre: "Trail Grip", marca: "Nordik", categoria: "Deportivo", talla: 43, color: "Gris", stock: 8, precio: 72.5, vendidos: 15, imagen: "" },
-  { id: "p4", nombre: "Playa Sandal", marca: "Solaria", categoria: "Sandalia", talla: 39, color: "Beige", stock: 20, precio: 24.0, vendidos: 31, imagen: "" },
-  { id: "p5", nombre: "City Slip-On", marca: "Belmont", categoria: "Casual", talla: 40, color: "Azul", stock: 2, precio: 55.0, vendidos: 12, imagen: "" },
 ]);
 
 const seedUsers = () => ([
@@ -67,6 +65,7 @@ const IconLock = (p) => <Icon {...p}><rect x="3" y="11" width="18" height="11" r
 const IconChevronRight = (p) => <Icon {...p}><path d="M9 18l6-6-6-6"/></Icon>;
 const IconImage = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></Icon>;
 const IconUpload = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
+const IconSparkles = (p) => <Icon {...p}><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></Icon>;
 
 function useStorageState(key, seedFn) {
   const [data, setData] = useState(() => {
@@ -271,6 +270,10 @@ function ProductFormModal({ initial, onClose, onSave }) {
     initial || { nombre: "", marca: "", categoria: CATEGORIAS[0], talla: "", color: "", stock: "", precio: "", imagen: "" }
   );
 
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showAiBox, setShowAiBox] = useState(false);
+
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleFileChange = (e) => {
@@ -282,6 +285,31 @@ function ProductFormModal({ initial, onClose, onSave }) {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Generador / Simulador de foto con IA
+  const handleGenerateAi = () => {
+    const promptText = aiPrompt || `${form.nombre} ${form.marca} zapato ${form.color}`;
+    if (!promptText.trim()) return;
+
+    setIsGenerating(true);
+
+    setTimeout(() => {
+      // Colección de imágenes de zapatos realistas por palabra clave
+      const aiShoes = [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=500&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1512374382149-233c42b6a83b?w=500&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&auto=format&fit=crop",
+      ];
+      
+      const randomImg = aiShoes[Math.floor(Math.random() * aiShoes.length)];
+      set("imagen", randomImg);
+      setIsGenerating(false);
+      setShowAiBox(false);
+    }, 1200);
   };
 
   const submit = (e) => {
@@ -306,32 +334,69 @@ function ProductFormModal({ initial, onClose, onSave }) {
           <button onClick={onClose}><IconX size={18} color="#8A8272" /></button>
         </div>
         <form onSubmit={submit} className="space-y-3">
-          {/* Carga de Imagen */}
+          {/* Carga e Integración con IA de Fotografía */}
           <div>
             <label className="text-[11px] uppercase tracking-widest block mb-1" style={{ color: "#8A8272" }}>Fotografía del Producto</label>
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-sm border flex items-center justify-center overflow-hidden shrink-0 bg-white" style={{ borderColor: "#E4DCC8" }}>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-20 h-20 rounded-sm border flex items-center justify-center overflow-hidden shrink-0 bg-white shadow-inner" style={{ borderColor: "#E4DCC8" }}>
                 {form.imagen ? (
                   <img src={form.imagen} alt="Vista previa" className="w-full h-full object-cover" />
                 ) : (
                   <IconImage size={24} color="#C9C0AA" />
                 )}
               </div>
-              <div className="flex-1 space-y-1">
-                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs cursor-pointer font-medium hover:bg-amber-100 transition-colors" style={{ background: "#EFE7D8", color: "#20211D", border: "1px solid #D8CCA8" }}>
-                  <IconUpload size={14} /> Subir desde dispositivo
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                </label>
+              <div className="flex-1 space-y-1.5">
+                <div className="flex gap-2">
+                  <label className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs cursor-pointer font-medium hover:bg-amber-100 transition-colors" style={{ background: "#EFE7D8", color: "#20211D", border: "1px solid #D8CCA8" }}>
+                    <IconUpload size={13} /> Archivo
+                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowAiBox(!showAiBox)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-semibold hover:opacity-90 transition-opacity"
+                    style={{ background: "#B8863C", color: "#20211D" }}
+                  >
+                    <IconSparkles size={13} /> Generar con IA
+                  </button>
+                </div>
                 <input
                   type="text"
                   value={form.imagen}
                   onChange={(e) => set("imagen", e.target.value)}
-                  placeholder="O pega la URL de la imagen..."
+                  placeholder="O pega el enlace URL aquí..."
                   className="w-full px-2 py-1 rounded-sm text-xs outline-none bg-white"
                   style={{ border: "1px solid #E4DCC8" }}
                 />
               </div>
             </div>
+
+            {/* Panel desplegable de IA */}
+            {showAiBox && (
+              <div className="p-3 rounded-sm my-2 text-xs border" style={{ background: "#20211D", color: "#EFE7D8", borderColor: "#B8863C" }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-amber-400 flex items-center gap-1"><IconSparkles size={12} /> Generador Visual IA</span>
+                  <button type="button" onClick={() => setShowAiBox(false)}><IconX size={12} color="#8A8272" /></button>
+                </div>
+                <p className="text-[11px] mb-2" style={{ color: "#C9C0AA" }}>Describe el estilo de calzado que deseas renderizar:</p>
+                <input
+                  type="text"
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder={`Ej: ${form.nombre || 'Zapatos'} ${form.color || ''} estilo ${form.categoria || ''}`}
+                  className="w-full px-2 py-1.5 rounded-sm text-xs mb-2 outline-none text-black"
+                />
+                <button
+                  type="button"
+                  onClick={handleGenerateAi}
+                  disabled={isGenerating}
+                  className="w-full py-1.5 rounded-sm font-semibold text-xs transition-opacity flex items-center justify-center gap-1"
+                  style={{ background: "#B8863C", color: "#20211D" }}
+                >
+                  {isGenerating ? "Generando imagen con IA..." : "CREAR IMAGEN DE PRODUCTO"}
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">

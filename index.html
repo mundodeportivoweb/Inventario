@@ -24,11 +24,11 @@ const LOW_STOCK = 5;
 const CATEGORIAS = ["Deportivo", "Casual", "Formal", "Bota", "Sandalia", "Infantil"];
 
 const seedProducts = () => ([
-  { id: "p1", nombre: "Runner Air", marca: "Nordik", categoria: "Deportivo", talla: 42, color: "Negro", stock: 14, precio: 65.0, vendidos: 23 },
-  { id: "p2", nombre: "Classic Oxford", marca: "Belmont", categoria: "Formal", talla: 41, color: "Café", stock: 4, precio: 89.0, vendidos: 9 },
-  { id: "p3", nombre: "Trail Grip", marca: "Nordik", categoria: "Deportivo", talla: 43, color: "Gris", stock: 8, precio: 72.5, vendidos: 15 },
-  { id: "p4", nombre: "Playa Sandal", marca: "Solaria", categoria: "Sandalia", talla: 39, color: "Beige", stock: 20, precio: 24.0, vendidos: 31 },
-  { id: "p5", nombre: "City Slip-On", marca: "Belmont", categoria: "Casual", talla: 40, color: "Azul", stock: 2, precio: 55.0, vendidos: 12 },
+  { id: "p1", nombre: "Runner Air", marca: "Nordik", categoria: "Deportivo", talla: 42, color: "Negro", stock: 14, precio: 65.0, vendidos: 23, imagen: "" },
+  { id: "p2", nombre: "Classic Oxford", marca: "Belmont", categoria: "Formal", talla: 41, color: "Café", stock: 4, precio: 89.0, vendidos: 9, imagen: "" },
+  { id: "p3", nombre: "Trail Grip", marca: "Nordik", categoria: "Deportivo", talla: 43, color: "Gris", stock: 8, precio: 72.5, vendidos: 15, imagen: "" },
+  { id: "p4", nombre: "Playa Sandal", marca: "Solaria", categoria: "Sandalia", talla: 39, color: "Beige", stock: 20, precio: 24.0, vendidos: 31, imagen: "" },
+  { id: "p5", nombre: "City Slip-On", marca: "Belmont", categoria: "Casual", talla: 40, color: "Azul", stock: 2, precio: 55.0, vendidos: 12, imagen: "" },
 ]);
 
 const seedUsers = () => ([
@@ -52,7 +52,7 @@ const IconBox = (p) => <Icon {...p}><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="
 const IconGrid = (p) => <Icon {...p}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></Icon>;
 const IconCart = (p) => <Icon {...p}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></Icon>;
 const IconHistory = (p) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></Icon>;
-const IconUsers = (p) => <Icon {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
+const IconUsers = (p) => <Icon {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1 0 7.75"/></Icon>;
 const IconLogout = (p) => <Icon {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></Icon>;
 const IconPlus = (p) => <Icon {...p}><path d="M12 5v14M5 12h14"/></Icon>;
 const IconSearch = (p) => <Icon {...p}><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></Icon>;
@@ -65,6 +65,8 @@ const IconX = (p) => <Icon {...p}><path d="M18 6L6 18"/><path d="M6 6l12 12"/></
 const IconUser = (p) => <Icon {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Icon>;
 const IconLock = (p) => <Icon {...p}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Icon>;
 const IconChevronRight = (p) => <Icon {...p}><path d="M9 18l6-6-6-6"/></Icon>;
+const IconImage = (p) => <Icon {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></Icon>;
+const IconUpload = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></Icon>;
 
 function useStorageState(key, seedFn) {
   const [data, setData] = useState(() => {
@@ -266,9 +268,21 @@ function Dashboard({ products, sales }) {
 
 function ProductFormModal({ initial, onClose, onSave }) {
   const [form, setForm] = useState(
-    initial || { nombre: "", marca: "", categoria: CATEGORIAS[0], talla: "", color: "", stock: "", precio: "" }
+    initial || { nombre: "", marca: "", categoria: CATEGORIAS[0], talla: "", color: "", stock: "", precio: "", imagen: "" }
   );
+
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        set("imagen", reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const submit = (e) => {
     e.preventDefault();
@@ -283,8 +297,8 @@ function ProductFormModal({ initial, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(32,33,29,0.7)" }}>
-      <div className="w-full max-w-md rounded-sm p-6 shadow-2xl" style={{ background: "#FAF6EE", border: "1px solid #B8863C" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style={{ background: "rgba(32,33,29,0.7)" }}>
+      <div className="w-full max-w-md rounded-sm p-6 shadow-2xl my-8" style={{ background: "#FAF6EE", border: "1px solid #B8863C" }}>
         <div className="flex items-center justify-between mb-4 border-b pb-2" style={{ borderColor: "#E4DCC8" }}>
           <h3 style={{ fontFamily: "'Oswald', sans-serif", fontSize: 20, color: "#20211D" }}>
             {initial ? "EDITAR CALZADO" : "REGISTRAR NUEVO CALZADO"}
@@ -292,6 +306,34 @@ function ProductFormModal({ initial, onClose, onSave }) {
           <button onClick={onClose}><IconX size={18} color="#8A8272" /></button>
         </div>
         <form onSubmit={submit} className="space-y-3">
+          {/* Carga de Imagen */}
+          <div>
+            <label className="text-[11px] uppercase tracking-widest block mb-1" style={{ color: "#8A8272" }}>Fotografía del Producto</label>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-sm border flex items-center justify-center overflow-hidden shrink-0 bg-white" style={{ borderColor: "#E4DCC8" }}>
+                {form.imagen ? (
+                  <img src={form.imagen} alt="Vista previa" className="w-full h-full object-cover" />
+                ) : (
+                  <IconImage size={24} color="#C9C0AA" />
+                )}
+              </div>
+              <div className="flex-1 space-y-1">
+                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs cursor-pointer font-medium hover:bg-amber-100 transition-colors" style={{ background: "#EFE7D8", color: "#20211D", border: "1px solid #D8CCA8" }}>
+                  <IconUpload size={14} /> Subir desde dispositivo
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                </label>
+                <input
+                  type="text"
+                  value={form.imagen}
+                  onChange={(e) => set("imagen", e.target.value)}
+                  placeholder="O pega la URL de la imagen..."
+                  className="w-full px-2 py-1 rounded-sm text-xs outline-none bg-white"
+                  style={{ border: "1px solid #E4DCC8" }}
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[11px] uppercase tracking-widest block" style={{ color: "#8A8272" }}>Modelo / Nombre</label>
@@ -385,6 +427,7 @@ function Inventario({ products, isOwner, onAdd, onUpdate, onDelete }) {
           <thead>
             <tr style={{ background: "#F1EADA", color: "#8A8272" }}>
               <th className="text-left px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest">Stock</th>
+              <th className="text-left px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest">Foto</th>
               <th className="text-left px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest">Modelo</th>
               <th className="text-left px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest">Marca</th>
               <th className="text-left px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest">Categoría</th>
@@ -398,6 +441,15 @@ function Inventario({ products, isOwner, onAdd, onUpdate, onDelete }) {
             {filtered.map((p) => (
               <tr key={p.id} style={{ borderTop: "1px solid #F1EADA" }}>
                 <td className="px-4 py-3"><StampBadge value={p.stock} danger={p.stock <= LOW_STOCK} /></td>
+                <td className="px-4 py-3">
+                  <div className="w-10 h-10 rounded-sm border flex items-center justify-center overflow-hidden bg-white shrink-0" style={{ borderColor: "#E4DCC8" }}>
+                    {p.imagen ? (
+                      <img src={p.imagen} alt={p.nombre} className="w-full h-full object-cover" />
+                    ) : (
+                      <IconImage size={18} color="#C9C0AA" />
+                    )}
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-medium" style={{ color: "#20211D" }}>{p.nombre}<div className="text-xs" style={{ color: "#8A8272" }}>Color: {p.color}</div></td>
                 <td className="px-4 py-3" style={{ color: "#20211D" }}>{p.marca}</td>
                 <td className="px-4 py-3" style={{ color: "#20211D" }}>{p.categoria}</td>
@@ -415,7 +467,7 @@ function Inventario({ products, isOwner, onAdd, onUpdate, onDelete }) {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={isOwner ? 8 : 7} className="text-center py-8 text-sm" style={{ color: "#8A8272" }}>Sin productos coincidentes.</td></tr>
+              <tr><td colSpan={isOwner ? 9 : 8} className="text-center py-8 text-sm" style={{ color: "#8A8272" }}>Sin productos coincidentes.</td></tr>
             )}
           </tbody>
         </table>
@@ -471,6 +523,21 @@ function Vender({ products, onVender, user }) {
               {products.map((p) => <option key={p.id} value={p.id}>{p.nombre} — {p.marca} (Talla: {p.talla}, Stock: {p.stock})</option>)}
             </select>
           </div>
+          {producto && (
+            <div className="flex items-center gap-3 p-3 rounded-sm" style={{ background: "#FAF6EE", border: "1px solid #E4DCC8" }}>
+              <div className="w-12 h-12 rounded-sm border flex items-center justify-center overflow-hidden bg-white shrink-0" style={{ borderColor: "#E4DCC8" }}>
+                {producto.imagen ? (
+                  <img src={producto.imagen} alt={producto.nombre} className="w-full h-full object-cover" />
+                ) : (
+                  <IconImage size={20} color="#C9C0AA" />
+                )}
+              </div>
+              <div className="text-xs" style={{ color: "#20211D" }}>
+                <p className="font-semibold">{producto.nombre}</p>
+                <p style={{ color: "#8A8272" }}>Color: {producto.color} | Precio: {money(producto.precio)}</p>
+              </div>
+            </div>
+          )}
           <div>
             <label className="text-[11px] uppercase tracking-widest block mb-1" style={{ color: "#8A8272" }}>Cantidad</label>
             <input type="number" min={1} value={cantidad} onChange={(e) => setCantidad(e.target.value)} className="w-full px-3 py-2 rounded-sm text-sm outline-none font-mono" style={{ border: "1px solid #E4DCC8" }} />
